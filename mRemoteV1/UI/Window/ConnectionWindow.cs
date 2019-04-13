@@ -671,7 +671,7 @@ namespace mRemoteNG.UI.Window
             }
         }
 
-        private void DuplicateTab()
+        internal void DuplicateTab()
         {
             try
             {
@@ -686,7 +686,7 @@ namespace mRemoteNG.UI.Window
             }
         }
 
-        private void Reconnect()
+        internal void Reconnect()
         {
             try
             {
