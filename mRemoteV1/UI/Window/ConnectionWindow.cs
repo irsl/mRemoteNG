@@ -93,6 +93,7 @@ namespace mRemoteNG.UI.Window
             cmenTabReconnect.Click += (sender, args) => Reconnect();
             cmenTabDisconnect.Click += (sender, args) => CloseTabMenu();
             cmenTabPuttySettings.Click += (sender, args) => ShowPuttySettingsDialog();
+            cmenCopyAllToClipboard.Click += (sender, args) => CopyAllToClipboard();
         }
 
         public TabPage AddConnectionTab(ConnectionInfo connectionInfo)
@@ -235,6 +236,7 @@ namespace mRemoteNG.UI.Window
             cmenTabReconnect.Text = Language.strMenuReconnect;
             cmenTabDisconnect.Text = Language.strMenuDisconnect;
             cmenTabPuttySettings.Text = Language.strPuttySettings;
+            cmenCopyAllToClipboard.Text = Language.strCopyAllToClipboard;
         }
 
         private void Connection_FormClosing(object sender, FormClosingEventArgs e)
@@ -417,14 +419,8 @@ namespace mRemoteNG.UI.Window
                     cmenTabTransferFile.Visible = true;
                 }
 
-                if (interfaceControl.Protocol is PuttyBase)
-                {
-                    cmenTabPuttySettings.Visible = true;
-                }
-                else
-                {
-                    cmenTabPuttySettings.Visible = false;
-                }
+                cmenTabPuttySettings.Visible = interfaceControl.Protocol is PuttyBase;
+                cmenCopyAllToClipboard.Visible = cmenTabPuttySettings.Visible = interfaceControl.Protocol is PuttyBase;
 
                 AddExternalApps();
             }
@@ -597,6 +593,20 @@ namespace mRemoteNG.UI.Window
             catch (Exception ex)
             {
                 Runtime.MessageCollector.AddExceptionMessage("ShowPuttySettingsDialog (UI.Window.ConnectionWindow) failed", ex);
+            }
+        }
+
+        private void CopyAllToClipboard()
+        {
+            try
+            {
+                var interfaceControl = TabController.SelectedTab?.Tag as InterfaceControl;
+                var puttyBase = interfaceControl?.Protocol as PuttyBase;
+                puttyBase?.CopyAllToClipboard();
+            }
+            catch (Exception ex)
+            {
+                Runtime.MessageCollector.AddExceptionMessage("CopyAllToClipboard (UI.Window.ConnectionWindow) failed", ex);
             }
         }
 

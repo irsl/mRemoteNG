@@ -15,7 +15,9 @@ namespace mRemoteNG.Connection.Protocol
 	public class PuttyBase : ProtocolBase
 	{
 		private const int IDM_RECONF = 0x50; // PuTTY Settings Menu ID
-	    private bool _isPuttyNg;
+        private const int IDM_COPYALL = 0x170; // copy all to clipboard Menu ID
+
+        private bool _isPuttyNg;
 
 	    #region Public Properties
 
@@ -259,12 +261,17 @@ namespace mRemoteNG.Connection.Protocol
 			{
 				Runtime.MessageCollector.AddMessage(MessageClass.ErrorMsg, Language.strPuttyShowSettingsDialogFailed + Environment.NewLine + ex.Message, true);
 			}
-		}
-        #endregion
+        }
 
-        #region Enums
+        public void CopyAllToClipboard()
+        {
+            NativeMethods.PostMessage(PuttyHandle, NativeMethods.WM_SYSCOMMAND, (IntPtr) IDM_COPYALL, (IntPtr)0);
+        }
+    #endregion
 
-	    protected enum Putty_Protocol
+    #region Enums
+
+    protected enum Putty_Protocol
 		{
 			ssh = 0,
 			telnet = 1,

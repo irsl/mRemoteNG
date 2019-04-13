@@ -24,6 +24,7 @@ namespace mRemoteNG.UI.Window
         private ToolStripMenuItem cmenTabViewOnly;
         internal ToolStripMenuItem cmenTabReconnect;
         internal ToolStripMenuItem cmenTabExternalApps;
+        internal ToolStripMenuItem cmenCopyAllToClipboard;
         private ToolStripMenuItem cmenTabStartChat;
         private ToolStripMenuItem cmenTabRefreshScreen;
         private ToolStripSeparator ToolStripSeparator1;
@@ -48,6 +49,7 @@ namespace mRemoteNG.UI.Window
             cmenTabSendSpecialKeysCtrlAltDel = new ToolStripMenuItem();
             cmenTabSendSpecialKeysCtrlEsc = new ToolStripMenuItem();
             cmenTabExternalApps = new ToolStripMenuItem();
+            cmenCopyAllToClipboard = new ToolStripMenuItem();
             cmenTabSep1 = new ToolStripSeparator();
             cmenTabRenameTab = new ToolStripMenuItem();
             cmenTabDuplicateTab = new ToolStripMenuItem();
@@ -86,6 +88,7 @@ namespace mRemoteNG.UI.Window
                 cmenTabRefreshScreen,
                 cmenTabSendSpecialKeys,
                 cmenTabPuttySettings,
+                cmenCopyAllToClipboard,
                 cmenTabExternalApps,
                 cmenTabSep1,
                 cmenTabRenameTab,
@@ -219,6 +222,13 @@ namespace mRemoteNG.UI.Window
             cmenTabPuttySettings.Name = "cmenTabPuttySettings";
             cmenTabPuttySettings.Size = new Size(201, 22);
             cmenTabPuttySettings.Text = @"PuTTY Settings";
+
+            // cmenCopyAllToClipboard
+            // 
+            this.cmenCopyAllToClipboard.Name = "cmenCopyAllToClipboard";
+            this.cmenCopyAllToClipboard.Size = new System.Drawing.Size(275, 26);
+            this.cmenCopyAllToClipboard.Text = "Copy all to clipboard";
+
             //
             //Connection
             //
