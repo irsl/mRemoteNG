@@ -658,7 +658,7 @@ namespace mRemoteNG.UI.Window
             }
         }
 
-        private void CloseTabMenu()
+        public void CloseTabMenu()
         {
             try
             {

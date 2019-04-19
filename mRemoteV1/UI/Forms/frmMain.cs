@@ -54,6 +54,7 @@ namespace mRemoteNG.UI.Forms
         const int HOTKEY_ID_ALT_D = 3;
         const int HOTKEY_ID_CTRL_ALT_D = 4;
         const int HOTKEY_ID_CTRL_K = 5;
+        const int HOTKEY_ID_CTRL_D = 6;
         const int HOTKEY_MOD_ALT = 1;
         const int HOTKEY_MOD_CTRL = 2;
         const int HOTKEY_MOD_SHIFT = 4;
@@ -148,8 +149,7 @@ namespace mRemoteNG.UI.Forms
             NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_NAV_RIGHT, HOTKEY_MOD_CTRL | HOTKEY_MOD_ALT, (int)Keys.Right);  // CTRL+ALT+Right: navigate right
             NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_ALT_D, HOTKEY_MOD_ALT, (int)Keys.D);      // ALT+D: duplicate tab
             NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_CTRL_ALT_D, HOTKEY_MOD_CTRL | HOTKEY_MOD_ALT, (int)Keys.D);      // CTRL+ALT+D: reconnect tab
-                                                                                                                                                 // CTRL+D, close session (traditional unix terminal feature)
-            
+            NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_CTRL_D, HOTKEY_MOD_CTRL, (int)Keys.D);      // CTRL+D: disconnect/close tab (close session (traditional unix terminal feature))
             NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID_CTRL_K, HOTKEY_MOD_CTRL, (int)Keys.K);      // CTRL+K: go to the search bar
             
             var messageCollector = Runtime.MessageCollector;
@@ -485,38 +485,35 @@ namespace mRemoteNG.UI.Forms
                         }
 
                         int wParamInt = m.WParam.ToInt32();
-                        if ((wParamInt == HOTKEY_ID_NAV_LEFT) || (wParamInt == HOTKEY_ID_NAV_RIGHT))
+                        switch(wParamInt)
                         {
-                            pnlDock.NavigateDocument(wParamInt == HOTKEY_ID_NAV_LEFT ? DockPanelHelper.Direction.Left : DockPanelHelper.Direction.Right);
-                        }
-                        else
-                        if((wParamInt == HOTKEY_ID_ALT_D)||(wParamInt == HOTKEY_ID_CTRL_ALT_D))
-                        {
-                            ConnectionWindow window = GetCurrentPanel();
-                            if(window != null)
-                            {
+                            case HOTKEY_ID_NAV_LEFT:
+                            case HOTKEY_ID_NAV_RIGHT:
+                                pnlDock.NavigateDocument(wParamInt == HOTKEY_ID_NAV_LEFT ? DockPanelHelper.Direction.Left : DockPanelHelper.Direction.Right);
+                                return;
+                            case HOTKEY_ID_ALT_D:
+                            case HOTKEY_ID_CTRL_ALT_D:
+                            case HOTKEY_ID_CTRL_D:
+                                ConnectionWindow window = GetCurrentPanel();
+                                if (window == null) break;
                                 if (wParamInt == HOTKEY_ID_ALT_D)
-                                    window?.DuplicateTab();
+                                    window.DuplicateTab();
                                 if (wParamInt == HOTKEY_ID_CTRL_ALT_D)
-                                    window?.Reconnect();
-                            }
-                        }
-                        else
-                        if (wParamInt == HOTKEY_ID_CTRL_K)
-                        {
-                            NativeMethods.SetForegroundWindow(this.Handle); // this call is needed to acquire back the focus from putty
-                            this.BringToFront();
-                            ConnectionTreeWindow ctw = GetConnectionTreeWindow();
-                            ctw?.txtSearch.Focus();
-                        }
-                        else
-                        {
-                            // lets forward the message to the underlying layers
-                            break;
+                                    window.Reconnect();
+                                if (wParamInt == HOTKEY_ID_CTRL_D)
+                                    window.CloseTabMenu();
+                                return;
+                            case HOTKEY_ID_CTRL_K:
+                                NativeMethods.SetForegroundWindow(this.Handle); // this call is needed to acquire back the focus from putty
+                                this.BringToFront();
+                                ConnectionTreeWindow ctw = GetConnectionTreeWindow();
+                                ctw?.txtSearch.Focus();
+                                return;
                         }
 
-                        // done with processing this event, no need to call base.WndProc
-                        return;
+                        // lets forward the message to the underlying layers
+                        break;
+
 				    case NativeMethods.WM_MOUSEACTIVATE:
 				        _inMouseActivate = true;
 				        break;
